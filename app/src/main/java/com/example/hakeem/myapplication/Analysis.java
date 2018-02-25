@@ -13,16 +13,10 @@ public class Analysis {
     private ArrayList<ArrayList<String>> response;
     private String message;
     private int id;
-    private int test;
 
     public JSONObject populateResponse() {
-
         JSONObject analysis = null;
-
-
-
         return analysis;
-
     }
 
 }

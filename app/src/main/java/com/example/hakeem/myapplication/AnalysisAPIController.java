@@ -7,6 +7,9 @@ package com.example.hakeem.myapplication;
 public class AnalysisAPIController {
 
     private Analysis analysis;
+    private APIAdaptor adaptor;
 
+    public void AnalysisAPIController(User);
+    public JsonObject populateAnalysis();
 
 }
