@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.ibm.watson.developer_cloud.http.ServiceCall;
+import com.ibm.watson.developer_cloud.http.ServiceCallback;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.ToneAnalyzer;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneAnalysis;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneInput;
@@ -29,15 +30,37 @@ public class IBMToneAPI extends API {
 
 	public JSONObject analyze(String message){
 		String jMsg = "{\"text\":}" + '\"' + message + "\"}";
-		JSONObject rtn = new JSONObject();
+		final JSONObject rtn = new JSONObject();
 		try {
 			JSONObject jObject = new JSONObject(jMsg);
 			ToneInput toneInput = new ToneInput.Builder().text(jObject.get("text").toString()).build();
 			ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();
-			ToneAnalysis tone = server.tone(options).execute();
-			return rtn.getJSONObject(tone.toString());
+			call = server.tone(options);
+			call.enqueue(new ServiceCallback<ToneAnalysis>(){
+				@Override public void onResponse(ToneAnalysis tone) {
+					Log.d("RESPONE", "MADE ASYCHRONOUSE CALL");
+					try {
+						rtn.getJSONObject(tone.toString());
+					}catch(JSONException e){
+						throw new RuntimeException("BAD TONE OBJECT");
+					}
+				}
+				@Override public void onFailure(Exception e) {
+					try {
+						rtn.getJSONObject("{\"text\":\"fail\"}");
+					}catch (JSONException ec){
+						throw new RuntimeException("BAD REQUEST FAIL STRING");
+					}
+				}
+				public void execute(){};
+			});
+			return rtn;
 		} catch (JSONException e){
-			Log.e("JSONERROR", "Invalid JSON");
+			try {
+				rtn.getJSONObject("{\"text\":\"fail\"}");
+			}catch (JSONException ex){
+				throw new RuntimeException("BAD FAILURE JSON STRING");
+			}
 		}
 		return rtn;
 	}
