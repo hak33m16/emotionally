@@ -30,6 +30,11 @@
                 android:resource="@layout/method" />
         </service>
 
+        <service
+            android:name=".AnalyzeService"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>

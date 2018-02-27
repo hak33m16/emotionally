@@ -47,7 +47,6 @@ public class InputServiceTest extends InputMethodService implements KeyboardView
 
                     break;
                 case Keyboard.KEYCODE_MODE_CHANGE:
-
                     break;
                 default :
                     char code = (char) primaryCode;
