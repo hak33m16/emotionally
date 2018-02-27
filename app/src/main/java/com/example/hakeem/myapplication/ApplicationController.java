@@ -5,8 +5,10 @@ import org.json.JSONObject;
 public class ApplicationController{
 
 	private APIAdaptor adaptor;
-	private AnalysisAPIControler apiController;
+	private AnalysisAPIController apiController;
 
-	public JSONObject populateAnalysis();
+	public JSONObject populateAnalysis(){
+		return new JSONObject();
+	}
 
 }
