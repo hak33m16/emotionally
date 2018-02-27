@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
 
+import java.lang.reflect.Method;
 
 public class InputServiceTest extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 
@@ -30,11 +31,11 @@ public class InputServiceTest extends InputMethodService implements KeyboardView
     }
 
     @Override
-    public void onKey(int primatyCode, int[] keyCodes) {
+    public void onKey(int primaryCode, int[] keyCodes) {
         InputConnection inputConnection = getCurrentInputConnection();
 
         if (inputConnection != null) {
-            switch(primatyCode) {
+            switch(primaryCode) {
                 case Keyboard.KEYCODE_DELETE :
                     CharSequence selectedText = inputConnection.getSelectedText(0);
 
@@ -45,8 +46,11 @@ public class InputServiceTest extends InputMethodService implements KeyboardView
                     }
 
                     break;
+                case Keyboard.KEYCODE_MODE_CHANGE:
+
+                    break;
                 default :
-                    char code = (char) primatyCode;
+                    char code = (char) primaryCode;
                     inputConnection.commitText(String.valueOf(code), 1);
             }
         }
