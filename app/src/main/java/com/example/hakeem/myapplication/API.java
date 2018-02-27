@@ -1,11 +1,10 @@
 package com.example.hakeem.myapplication;
 
-import org.json.JSONObject;
-
 public class API {
 
-	private String API_ID;
+	protected String API_ID;
 
-	public JSONObject analyze(String message);
+	public API(){API_ID = null;}
+	public API(String a){API_ID = a;}
 
 }
