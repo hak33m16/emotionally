@@ -14,6 +14,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     IBMToneAPI ita = new IBMToneAPI();
-    JSONObject analyzedJson = ita.analyze("Hello, World!");
+    JSONObject analyzedJson = ita.analyze("Hello, World! I am doing so good today, I probably got my app working :)");
     String jString = analyzedJson.toString();
 }
