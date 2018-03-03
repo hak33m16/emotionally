@@ -29,40 +29,36 @@ public class IBMToneAPI extends API {
 	}
 
 	public JSONObject analyze(String message){
-		String jMsg = "{\"text\":}" + '\"' + message + "\"}";
-		final JSONObject rtn = new JSONObject();
+		String jMsg = "{\"text\":" + '\"' + message + "\"}";
+		Log.d("EMOTIONALLY", "Message To Analyze: " + jMsg);
+		JSONObject rtn = new JSONObject();
 		try {
 			JSONObject jObject = new JSONObject(jMsg);
+			Log.d("EMOTIONALLY", "JSONObject: " + jObject.toString());
+			Log.d("EMOTIONALLY", jObject.get("text").toString());
 			ToneInput toneInput = new ToneInput.Builder().text(jObject.get("text").toString()).build();
+			Log.d("EMOTIONALLY", toneInput.text());
 			ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();
 			call = server.tone(options);
 			call.enqueue(new ServiceCallback<ToneAnalysis>(){
 				@Override public void onResponse(ToneAnalysis tone) {
-					Log.d("RESPONE", "MADE ASYCHRONOUSE CALL");
-					try {
-						rtn.getJSONObject(tone.toString());
-					}catch(JSONException e){
-						throw new RuntimeException("BAD TONE OBJECT");
-					}
+					Log.d("EMOTIONALLY", "MADE ASYNCRONOUS CALL");
+					Log.d("EMOTIONALLY", "Success: " + tone.toString());
 				}
 				@Override public void onFailure(Exception e) {
-					try {
-						rtn.getJSONObject("{\"text\":\"fail\"}");
-					}catch (JSONException ec){
-						throw new RuntimeException("BAD REQUEST FAIL STRING");
-					}
+					Log.e("EMOTIONALLY", "RESPONSE FAILED!");
 				}
 				public void execute(){};
 			});
-			return rtn;
 		} catch (JSONException e){
 			try {
-				rtn.getJSONObject("{\"text\":\"fail\"}");
+				rtn.put("Text", "Fail");
 			}catch (JSONException ex){
+				Log.e("EMOTIONALLY", "FAILED TO POPULATE ERROR OBJECT");
 				throw new RuntimeException("BAD FAILURE JSON STRING");
 			}
 		}
+		Log.d("EMOTIONALLY", "RTN+STR: " + rtn.toString());
 		return rtn;
 	}
-
 }
