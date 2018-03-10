@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.Console;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,10 +28,14 @@ public class MainActivity extends AppCompatActivity {
         //analyzeView();
         setContentView(R.layout.activity_main);
 
+        IBMToneAPI ita = new IBMToneAPI();
+        JSONObject analyzedJson = ita.analyze("Hello, World! I am doing so good today, I probably got my app working :)");
+        String jString = analyzedJson.toString();
+
         //Check if the application has draw over other apps permission or not?
         //This permission is by default available for API<23. But for API > 23
         //you have to ask for the permission in runtime.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
 
             //If the draw over permission is not available open the settings screen
             //to grant the permission.
@@ -52,13 +58,13 @@ public class MainActivity extends AppCompatActivity {
             });
 
             analyzeView();
-        }
+        }*/
 
 
 
     }
 
-    public void analyzeView() {
+    /*public void analyzeView() {
 
         Button analyze = (Button) findViewById(R.id.analyze_key);
         if (analyze != null && !analyze.equals(null)) {
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-    }
+    }*/
 
 
     /*
