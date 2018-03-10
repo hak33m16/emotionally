@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -20,18 +22,55 @@ import java.io.Console;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
+    //private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
+    // https://developer.android.com/reference/android/view/WindowManager.LayoutParams.html#TYPE_APPLICATION_OVERLAY
+    private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2038;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //analyzeView();
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+
+            //If the draw over permission is not available open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+        }// else {
+        //    initializeView();
+        //}
+
+    }
+
+    public void analyzeMessage(View view) {
+
         IBMToneAPI ita = new IBMToneAPI();
-        JSONObject analyzedJson = ita.analyze("Hello, World! I am doing so good today, I probably got my app working :)");
+
+        EditText textbox = findViewById(R.id.editText);
+        JSONObject analyzedJson = ita.analyze(textbox.getText().toString()); //JSONObject analyzedJson = ita.analyze("Hello, World! I am doing so good today, I probably got my app working :)");
+
         String jString = analyzedJson.toString();
 
+        TextView textview = findViewById(R.id.textView);
+        textview.setText(jString);
+
+    }
+
+    public void analyzeHead(View view) {
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startService(new Intent(MainActivity.this, AnalyzeService.class));
+                finish();
+            }
+        });
+    }
+
+}
+
+        //analyzeView();
         //Check if the application has draw over other apps permission or not?
         //This permission is by default available for API<23. But for API > 23
         //you have to ask for the permission in runtime.
@@ -60,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
             analyzeView();
         }*/
 
+    //}
 
 
-    }
 
     /*public void analyzeView() {
 
@@ -118,4 +157,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
 
-}
+//}
