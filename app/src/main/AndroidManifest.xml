@@ -37,6 +37,10 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service
+            android:name=".MainService"
+            android:exported="false" />
+
     </application>
 
 </manifest>
