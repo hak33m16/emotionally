@@ -12,17 +12,18 @@ import org.json.JSONObject;
 public class AnalysisAPIController {
 
     private Analysis analysis;
-    private APIAdaptor adaptor;
+    public APIAdaptor adaptor;
 
-    public void AnalysisAPIController(User u){};
-    public JSONObject populateAnalysis(){
-        String jStr = "{\"key\":\"value\"}";
-        try {
-            return new JSONObject(jStr);
-        } catch (JSONException e) {
-            Log.d("MYAPP", "unexpected JSON Exception");
-        }
-        return new JSONObject();
+    public void AnalysisAPIController(Settings settings){
+        adaptor.getAPI(settings.selectedAPI);
+    }
+
+    public void populateAnalysis(JSONObject analyzedResponse){
+        analysis.message = analyzedResponse.toString();
+    }
+
+    public void printAnalysis(){
+        Log.d("EMOTIONALLY", analysis.message);
     }
 
 }

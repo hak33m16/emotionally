@@ -10,13 +10,12 @@ import java.util.ArrayList;
 
 public class Analysis {
 
-    private ArrayList<ArrayList<String>> response;
-    private String message;
-    private int id;
+    public ArrayList<ArrayList<String>> response;
+    public String message;
+    public int id;
 
-    public JSONObject populateResponse() {
-        JSONObject analysis = null;
-        return analysis;
-    }
+    //public void populateResponse() {
+    //
+    //}
 
 }
