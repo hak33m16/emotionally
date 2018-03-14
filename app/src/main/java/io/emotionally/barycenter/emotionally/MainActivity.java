@@ -29,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /* Screen Switching */
+
+    public void options_screen(View view) {
+        setContentView(R.layout.options_view);
+    }
+
     /*
     //private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
     // https://developer.android.com/reference/android/view/WindowManager.LayoutParams.html#TYPE_APPLICATION_OVERLAY
@@ -69,12 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonViewLaunch(View v){
         if (Settings.canDrawOverlays(this)) {
-
             // Launch service right away - the user has already previously granted permission
             launchMainService();
         }
         else {
-
             // Check that the user has granted permission, and prompt them if not
             checkDrawOverlayPermission();
         }
@@ -82,11 +86,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void launchMainService() {
-
         Intent svc = new Intent(this, MainService.class);
-
         startService(svc);
-
         finish();
     }
 
@@ -96,10 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Checks if app already has permission to draw overlays
         if (!Settings.canDrawOverlays(this)) {
-
             // If not, form up an Intent to launch the permission request
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-
             // Launch Intent, with the supplied request code
             startActivityForResult(intent, REQUEST_CODE);
         }
@@ -110,15 +109,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Check if a request code is received that matches that which we provided for the overlay draw request
         if (requestCode == REQUEST_CODE) {
-
             // Double-check that the user granted it, and didn't just dismiss the request
             if (Settings.canDrawOverlays(this)) {
-
                 // Launch the service
                 launchMainService();
             }
             else {
-
                 Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show();
             }
         }
