@@ -19,11 +19,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void main() {
+        Log.d("EMOTIONALLY", "0");
         Settings specs = new Settings("IBMToneAPI");
+        Log.d("EMOTIONALLY", "1");
         User uname = new User("a51ba1b9-ba49-4b5e-b197-edc37eecd571", "dHXyey1MmoWC", specs);
+        Log.d("EMOTIONALLY", "2");
         ApplicationController apc = new ApplicationController(uname);
+        Log.d("EMOTIONALLY", "3");
         apc.apiController.populateAnalysis(apc.apiController.adaptor.getAPI(specs.selectedAPI).analyze("Some great weather we are having today, what do you think bob?"));
+        Log.d("EMOTIONALLY", "4");
         apc.apiController.printAnalysis();
+        Log.d("EMOTIONALLY", "5");
     }
 
     private void startAPIThread(final IBMToneAPI a){
