@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchMainService() {
         Intent svc = new Intent(this, MainService.class);
+        stopService(svc);
         startService(svc);
         finish();
     }
