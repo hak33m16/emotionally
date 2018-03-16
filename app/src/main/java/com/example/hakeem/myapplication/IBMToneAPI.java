@@ -24,6 +24,8 @@ public class IBMToneAPI extends API{
 	private IBMEnum mode;
 	private JSONObject response = new JSONObject();
 
+	private Boolean analysis_status = false;
+
 	public IBMToneAPI(){
 		server = new ToneAnalyzer("2017-09-21");
 		login = Pair.create("a51ba1b9-ba49-4b5e-b197-edc37eecd571", "dHXyey1MmoWC");
@@ -35,6 +37,9 @@ public class IBMToneAPI extends API{
 	    ToneInput toneInput = new ToneInput.Builder().text(message).build();
 	    ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();
 	    ToneAnalysis tone = server.tone(options).execute();
+
+        analysis_status = true;
+
 		Log.d("EMOTIONALLY", "Called analyze");
 	    try {
 	        Log.d("EMOTIONALLY", "Got Response");
@@ -42,8 +47,14 @@ public class IBMToneAPI extends API{
         } catch (JSONException e){
 	        Log.e("EMOTIONALLY", "Bad JSONObject");
         }
+
         return new JSONObject();
     }
+
+    @Override
+	public Boolean message_analyzed() {
+		return analysis_status;
+	}
 
 	/*public void analyze(String message){
 		ToneInput toneInput = new ToneInput.Builder().text(message).build();

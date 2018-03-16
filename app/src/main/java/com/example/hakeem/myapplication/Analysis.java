@@ -14,6 +14,7 @@ public class Analysis {
     public String message;
     public int id;
 
+
     public Analysis(){
         response = new ArrayList<ArrayList<String>>();
         message = new String("");

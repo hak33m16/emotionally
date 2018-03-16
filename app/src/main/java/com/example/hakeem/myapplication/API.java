@@ -15,5 +15,6 @@ public class API {
     public JSONObject analyze(String message){
         return new JSONObject();
     }
+    public Boolean message_analyzed() { return false; }
 
 }
