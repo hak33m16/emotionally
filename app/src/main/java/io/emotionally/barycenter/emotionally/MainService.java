@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,7 +18,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+
 /**
  * Created by matt on 08/08/2016.
  */
@@ -30,8 +34,36 @@ public class MainService extends Service implements View.OnTouchListener {
 
     private View floatyView;
 
+    private String displayText = "empty";
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d("EMOTIONALLY", "We've made it to the onStartCommand function in MainService.java");
+
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            Log.d("EMOTIONALLY", "The analysis didn't make it.");
+        } else {
+            displayText = (String) extras.get("ANALYSIS");
+        }
+
+        addOverlayView();
+
+        return START_NOT_STICKY;
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
+
+        Log.d("EMOTIONALLY", "We've made it to the IBinder function in MainService.java");
+
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            Log.d("EMOTIONALLY", "The analysis didn't make it.");
+        } else {
+            displayText = (String) extras.get("ANALYSIS");
+        }
 
         return null;
     }
@@ -43,7 +75,7 @@ public class MainService extends Service implements View.OnTouchListener {
 
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
-        addOverlayView();
+        //addOverlayView();
     }
 
     private void addOverlayView() {
@@ -83,9 +115,13 @@ public class MainService extends Service implements View.OnTouchListener {
             }
         };
 
+        Log.d("EMOTIONALLY", "But did we do this AFTER making it to the onStart?");
         floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_alert, interceptorLayout);
 
         floatyView.setOnTouchListener(this);
+
+        TextView testModify = floatyView.findViewById(R.id.float_analysis_text);
+        testModify.setText(displayText);
 
         windowManager.addView(floatyView, params);
     }

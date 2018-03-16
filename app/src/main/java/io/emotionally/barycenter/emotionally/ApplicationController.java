@@ -4,11 +4,35 @@ import org.json.JSONObject;
 
 public class ApplicationController{
 
-	private APIAdaptor adaptor;
-	private AnalysisAPIController apiController;
+	public AnalysisAPIController apiController;
+	public User user;
 
-	public JSONObject populateAnalysis(){
-		return new JSONObject();
-	}
+    public ApplicationController(){
+        apiController = new AnalysisAPIController();
+        user = null;
+    }
+
+    public ApplicationController(User u){
+        user = u;
+        apiController = new AnalysisAPIController();
+    }
+
+    public ApplicationController(AnalysisAPIController apc){
+        apiController = apc;
+        user = null;
+    }
+
+    public ApplicationController(User u, AnalysisAPIController apc){
+        user = u;
+        apiController = apc;
+    }
+
+    public AnalysisAPIController getAnalysisApiController(){
+        return apiController;
+    }
+
+    public User getUser(){
+        return user;
+    }
 
 }

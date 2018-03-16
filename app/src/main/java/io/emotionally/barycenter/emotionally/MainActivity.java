@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,18 +23,170 @@ import java.io.Console;
 
 public class MainActivity extends AppCompatActivity {
 
+    ApplicationController apc;
+    String testMessage = "Some great weather we are having today, what do you think, Bob? I hate your guts, bastard.";
+    ProgressBar analysisStatus;
+    EditText mainActivityTextBox;
+
+    //String currentUserMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.d("EMOTIONALLY", "Application instantiated.");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Hide loading bar by default
+        analysisStatus = findViewById(R.id.analysis_progress_bar);
+        analysisStatus.setVisibility( View.INVISIBLE );
+
+        mainActivityTextBox = findViewById(R.id.analysis_input_main_activity);
+
+        apc = new ApplicationController();
 
     }
 
     /* Screen Switching */
-
     public void options_screen(View view) {
         setContentView(R.layout.options_view);
     }
+
+    public void analyzeButton(View view) {
+
+        // Display loading bar in main UI
+        analysisStatus.setVisibility( View.VISIBLE );
+
+        // Act as a buffer between view hierarchies
+        final String currentUserMessage = mainActivityTextBox.getText().toString();
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                //final String response = "Let's not waste API calls right now.";
+                final String response = apc.getAnalysisApiController().getApiAdaptor().getAPI("IBMToneAPI").analyze( currentUserMessage);
+                Log.d("EMOTIONALLY", response);
+
+                launchMainService(response);
+
+            }
+        };
+
+        new Thread(runnable).start();
+
+    }
+
+    private void launchMainService( String text ) {
+
+        // Analysis is done if we've reached this point
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                analysisStatus.setVisibility( View.INVISIBLE );
+            }
+        });
+
+        Intent svc = new Intent(this, MainService.class);
+        svc.putExtra("ANALYSIS", text);
+
+        // Close activity if it is already open
+        stopService(svc);
+        startService(svc);
+        finish();
+
+    }
+
+    public final static int REQUEST_CODE = 10101;
+
+    public void checkDrawOverlayPermission() {
+
+        // Checks if app already has permission to draw overlays
+        if (!Settings.canDrawOverlays(this)) {
+            // If not, form up an Intent to launch the permission request
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+            // Launch Intent, with the supplied request code
+            startActivityForResult(intent, REQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
+
+        // Check if a request code is received that matches that which we provided for the overlay draw request
+        if (requestCode == REQUEST_CODE) {
+            // Double-check that the user granted it, and didn't just dismiss the request
+            if (Settings.canDrawOverlays(this)) {
+                // Launch the service
+                launchMainService("this should not have happened");
+            }
+            else {
+                Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Must run on UI thread, modifies UI
+                /*runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        launchMainService(response);
+                        //mainViewModifier(response);
+                    }
+                });*/
+
+
+    /*public void buttonViewLaunch(View v){
+        if (Settings.canDrawOverlays(this)) {
+            // Launch service right away - the user has already previously granted permission
+
+            launchMainService( mainActivityTextBox.getText().toString() );
+        }
+        else {
+            // Check that the user has granted permission, and prompt them if not
+            checkDrawOverlayPermission();
+        }
+        //launchMainService();
+    }*/
+
+
+
+
+
+
+
+
+
+
+
 
     /*
     //private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
@@ -73,55 +226,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }*/
 
-    public void buttonViewLaunch(View v){
-        if (Settings.canDrawOverlays(this)) {
-            // Launch service right away - the user has already previously granted permission
-            launchMainService();
-        }
-        else {
-            // Check that the user has granted permission, and prompt them if not
-            checkDrawOverlayPermission();
-        }
-        //launchMainService();
-    }
 
-    private void launchMainService() {
-        Intent svc = new Intent(this, MainService.class);
-        stopService(svc);
-        startService(svc);
-        finish();
-    }
 
-    public final static int REQUEST_CODE = 10101;
 
-    public void checkDrawOverlayPermission() {
 
-        // Checks if app already has permission to draw overlays
-        if (!Settings.canDrawOverlays(this)) {
-            // If not, form up an Intent to launch the permission request
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-            // Launch Intent, with the supplied request code
-            startActivityForResult(intent, REQUEST_CODE);
-        }
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
 
-        // Check if a request code is received that matches that which we provided for the overlay draw request
-        if (requestCode == REQUEST_CODE) {
-            // Double-check that the user granted it, and didn't just dismiss the request
-            if (Settings.canDrawOverlays(this)) {
-                // Launch the service
-                launchMainService();
-            }
-            else {
-                Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
-}
+
+
+
+
+
+
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
 

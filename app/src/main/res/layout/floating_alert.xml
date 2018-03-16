@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/float_analysis_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"/>
+
+    <!--
     <EditText
+        android:id="@+id/floating_teststring"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="teststring" />
@@ -23,7 +33,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="testsend" />
+        android:text="testsend" />-->
 </LinearLayout>
 <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
