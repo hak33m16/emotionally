@@ -12,9 +12,14 @@ public class API {
         API_ID = a;
     }
 
-    public JSONObject analyze(String message){
+    /*public JSONObject analyze(String message){
         return new JSONObject();
+    }*/
+
+    public String analyze(String message){
+        return new String();
     }
-    public Boolean message_analyzed() { return false; }
+
+    //public Boolean message_analyzed() { return false; }
 
 }

@@ -33,7 +33,24 @@ public class IBMToneAPI extends API{
 	}
 
     @Override
-	public JSONObject analyze(String message){
+	public String analyze(String message){
+		ToneInput toneInput = new ToneInput.Builder().text(message).build();
+		ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();
+		ToneAnalysis tone = server.tone(options).execute();
+
+		analysis_status = true;
+
+		Log.d("EMOTIONALLY", "Called analyze");
+		try {
+			Log.d("EMOTIONALLY", "Got Response");
+			return tone.toString();
+		} catch (Exception e){
+			Log.e("EMOTIONALLY", "Bad JSONObject");
+		}
+
+		return new String();
+	}
+	/*public JSONObject analyze(String message){
 	    ToneInput toneInput = new ToneInput.Builder().text(message).build();
 	    ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();
 	    ToneAnalysis tone = server.tone(options).execute();
@@ -49,12 +66,12 @@ public class IBMToneAPI extends API{
         }
 
         return new JSONObject();
-    }
+    }*/
 
-    @Override
-	public Boolean message_analyzed() {
-		return analysis_status;
-	}
+    //@Override
+	//public Boolean message_analyzed() {
+		//return analysis_status;
+	//}
 
 	/*public void analyze(String message){
 		ToneInput toneInput = new ToneInput.Builder().text(message).build();
