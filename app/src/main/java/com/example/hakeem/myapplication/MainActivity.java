@@ -1,12 +1,16 @@
 package com.example.hakeem.myapplication;
 
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,11 +20,14 @@ public class MainActivity extends AppCompatActivity {
     User uname = new User("a51ba1b9-ba49-4b5e-b197-edc37eecd571", "dHXyey1MmoWC", specs);
     ApplicationController apc = new ApplicationController();
 
+    TextView analysisTextField = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        analysisTextField = (TextView) findViewById(R.id.analysis_response_field);
         apc = new ApplicationController();
 
         main();
@@ -34,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         String testMessage = "Some great weather we are having today, what do you think bob? I fucked your wife.";
         //APICall(apc.getAnalysisApiController().getApiAdaptor().getAPI("IBMToneAPI"), testMessage);
 
-        APICall(apc, testMessage);
+        //APICall(apc, testMessage);
 
         //AnalysisAPIController anaApiCon = apc.getAnalysisApiController();
 
@@ -52,8 +59,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void analyzeButton(View view) {
-        
+
+        /*Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });*/
+
+        String testMessage = "Some great weather we are having today, what do you think bob? I fucked your wife.";
+        APICall(apc, testMessage);
+
+        //setContentView(R.layout.activity_main);
+        //TextView analysisTextField = (TextView) findViewById(R.id.analysis_response_field);
+
+
+
+        //analysisTextField.setText( apc.getAnalysisApiController().getAnalysis().toString() );
+
+        //TextView analysis_field = (TextView) findViewById(R.layout.activity_main.)
+
     }
+
+    public void changeText(String text) {
+        analysisTextField.setText( text );
+    }
+
+
+    /*class APIThread extends Thread {
+
+        public Handler apiHandler;
+
+        @Override
+        public void run() {
+
+            Looper.prepare();
+
+            apiHandler = new Handler() {
+
+                @Override
+                public void handleMessage(Message msg) {
+
+                }
+
+            }
+
+        }
+
+    }*/
 
     private void APICall(final ApplicationController apc, final String message) {
 
@@ -66,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONObject hopefully = apc.getAnalysisApiController().getAnalysis();
                 Log.d("EMOTIONALLY", hopefully.toString());
+
+                //changeText( hopefully.toString() );
+
+                //analysisTextField.setText( apc.getAnalysisApiController().getAnalysis().toString() );
+                //analysisTextField.setText( hopefully.toString() );
                 /*if (api.message_analyzed()) {
 
                     //return response;
