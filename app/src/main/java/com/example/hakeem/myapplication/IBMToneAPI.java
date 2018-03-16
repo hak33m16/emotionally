@@ -30,6 +30,7 @@ public class IBMToneAPI extends API{
 		server.setUsernameAndPassword(login.first, login.second);
 	}
 
+    @Override
 	public JSONObject analyze(String message){
 	    ToneInput toneInput = new ToneInput.Builder().text(message).build();
 	    ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();

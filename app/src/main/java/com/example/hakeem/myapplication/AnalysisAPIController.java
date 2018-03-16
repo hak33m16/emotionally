@@ -14,7 +14,16 @@ public class AnalysisAPIController {
     private Analysis analysis;
     public APIAdaptor adaptor;
 
-    public void AnalysisAPIController(Settings settings){
+    public AnalysisAPIController(){
+        analysis = new Analysis();
+        adaptor = new APIAdaptor();
+    }
+
+    public APIAdaptor getApiAdaptor(){
+        return adaptor;
+    }
+
+    public AnalysisAPIController(Settings settings){
         adaptor.getAPI(settings.selectedAPI);
     }
 
@@ -25,5 +34,4 @@ public class AnalysisAPIController {
     public void printAnalysis(){
         Log.d("EMOTIONALLY", analysis.message);
     }
-
 }

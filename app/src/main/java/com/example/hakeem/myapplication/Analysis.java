@@ -14,8 +14,14 @@ public class Analysis {
     public String message;
     public int id;
 
-    //public void populateResponse() {
-    //
-    //}
+    public Analysis(){
+        response = new ArrayList<ArrayList<String>>();
+        message = new String("");
+        id = 0;
+    }
+
+    public void populateResponse() {
+        //
+    }
 
 }

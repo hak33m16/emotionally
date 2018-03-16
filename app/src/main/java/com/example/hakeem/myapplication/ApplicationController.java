@@ -8,13 +8,13 @@ public class ApplicationController{
 	public User user;
 
     public ApplicationController(){
-        apiController = null;
+        apiController = new AnalysisAPIController();
         user = null;
     }
 
     public ApplicationController(User u){
         user = u;
-        apiController = null;
+        apiController = new AnalysisAPIController();
     }
 
     public ApplicationController(AnalysisAPIController apc){
@@ -25,6 +25,14 @@ public class ApplicationController{
     public ApplicationController(User u, AnalysisAPIController apc){
         user = u;
         apiController = apc;
+    }
+
+    public AnalysisAPIController getAnalysisApiController(){
+        return apiController;
+    }
+
+    public User getUser(){
+        return user;
     }
 
 }
