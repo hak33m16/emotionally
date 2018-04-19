@@ -21,6 +21,14 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.RadarData;
+import com.github.mikephil.charting.data.RadarDataSet;
+import com.github.mikephil.charting.data.RadarEntry;
+
+import java.util.ArrayList;
+
 /**
  *
  * Created by matt on 08/08/2016.
@@ -120,12 +128,32 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
         };
 
         Log.d("EMOTIONALLY", "But did we do this AFTER making it to the onStart?");
-        floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_alert, interceptorLayout);
+        floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_analysis_alert, interceptorLayout);
 
         floatyView.setOnTouchListener(this);
 
         TextView testModify = floatyView.findViewById(R.id.float_analysis_text);
         testModify.setText(displayText);
+
+        RadarChart analysisChart = (RadarChart) floatyView.findViewById(R.id.float_analysis_radarchart);
+
+        // Data population for chart //
+
+        ArrayList<RadarEntry> entries = new ArrayList<>();
+        entries.add(new RadarEntry(4f, 0));
+        entries.add(new RadarEntry(1f, 1));
+        entries.add(new RadarEntry(2f, 2));
+        entries.add(new RadarEntry(3f, 3));
+        entries.add(new RadarEntry(1f, 4));
+        entries.add(new RadarEntry(5f, 5));
+
+        RadarDataSet radarDataSet = new RadarDataSet(entries, "Response");
+
+        RadarData radarData = new RadarData(radarDataSet);
+
+        analysisChart.setData(radarData);
+
+        // -- //
 
         windowManager.addView(floatyView, params);
     }
