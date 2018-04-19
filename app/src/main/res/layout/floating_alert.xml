@@ -7,11 +7,24 @@
     android:paddingRight="16dp"
     android:orientation="vertical" >
 
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+
+        <Button
+            android:id="@+id/float_analyst_exit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="x" />
+    </RelativeLayout>
+
+
     <TextView
         android:id="@+id/float_analysis_text"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top"/>
+        android:gravity="top" />
 
     <!--
     <EditText

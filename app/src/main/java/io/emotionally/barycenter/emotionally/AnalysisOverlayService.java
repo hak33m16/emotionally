@@ -18,17 +18,21 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
+ *
  * Created by matt on 08/08/2016.
+ *
+ * Extended by: Abdel-Hakeem Badran
+ * Date: 04/19/2018
+ *
  */
 
-public class MainService extends Service implements View.OnTouchListener {
+public class AnalysisOverlayService extends Service implements View.OnTouchListener, View.OnGenericMotionListener {
 
-    private static final String TAG = MainService.class.getSimpleName();
+    private static final String TAG = AnalysisOverlayService.class.getSimpleName();
 
     private WindowManager windowManager;
 
@@ -39,7 +43,7 @@ public class MainService extends Service implements View.OnTouchListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d("EMOTIONALLY", "We've made it to the onStartCommand function in MainService.java");
+        Log.d("EMOTIONALLY", "We've made it to the onStartCommand function in AnalysisOverlayService.java");
 
         Bundle extras = intent.getExtras();
         if (extras == null) {
@@ -56,7 +60,7 @@ public class MainService extends Service implements View.OnTouchListener {
     @Override
     public IBinder onBind(Intent intent) {
 
-        Log.d("EMOTIONALLY", "We've made it to the IBinder function in MainService.java");
+        Log.d("EMOTIONALLY", "We've made it to the IBinder function in AnalysisOverlayService.java");
 
         Bundle extras = intent.getExtras();
         if (extras == null) {
@@ -149,4 +153,13 @@ public class MainService extends Service implements View.OnTouchListener {
 
         return true;
     }
+
+    @Override
+    public boolean onGenericMotion(View view, MotionEvent motionEvent) {
+
+        //motionEvent.getButtonState();
+
+        return true;
+    }
+
 }

@@ -1,25 +1,19 @@
 package io.emotionally.barycenter.emotionally;
 
-import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONObject;
-
-import java.io.Console;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,10 +27,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+
         Log.d("EMOTIONALLY", "Application instantiated.");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        mainToolbar.setBackground(
+                new ColorDrawable(Color.BLACK )
+        );
+        mainToolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(mainToolbar);
 
         // Hide loading bar by default
         analysisStatus = findViewById(R.id.analysis_progress_bar);
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Intent svc = new Intent(this, MainService.class);
+        Intent svc = new Intent(this, AnalysisOverlayService.class);
         svc.putExtra("ANALYSIS", text);
 
         // Close activity if it is already open
