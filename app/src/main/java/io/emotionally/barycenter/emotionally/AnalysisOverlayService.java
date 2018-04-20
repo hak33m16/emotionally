@@ -8,6 +8,8 @@ package io.emotionally.barycenter.emotionally;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,6 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
@@ -68,7 +71,7 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
     @Override
     public IBinder onBind(Intent intent) {
 
-        Log.d("EMOTIONALLY", "We've made it to the IBinder function in AnalysisOverlayService.java");
+        /*Log.d("EMOTIONALLY", "We've made it to the IBinder function in AnalysisOverlayService.java");
 
         Bundle extras = intent.getExtras();
         if (extras == null) {
@@ -77,6 +80,9 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
             displayText = (String) extras.get("ANALYSIS");
         }
 
+        return null;*/
+
+        // No binding implementation provided.
         return null;
     }
 
@@ -140,18 +146,35 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
         // Data population for chart //
 
         ArrayList<RadarEntry> entries = new ArrayList<>();
-        entries.add(new RadarEntry(4f, 0));
-        entries.add(new RadarEntry(1f, 1));
-        entries.add(new RadarEntry(2f, 2));
-        entries.add(new RadarEntry(3f, 3));
-        entries.add(new RadarEntry(1f, 4));
-        entries.add(new RadarEntry(5f, 5));
+        entries.add(new RadarEntry(4f, "Anger"));
+        entries.add(new RadarEntry(1f, "Fear"));
+        entries.add(new RadarEntry(2f, "Joy"));
+        entries.add(new RadarEntry(3f, "Sadness"));
+        entries.add(new RadarEntry(1f, "Analytical"));
+        entries.add(new RadarEntry(5f, "Confident"));
+        entries.add(new RadarEntry(2f, "Tentative"));
 
-        RadarDataSet radarDataSet = new RadarDataSet(entries, "Response");
+        RadarDataSet radarDataSet = new RadarDataSet(entries, "Score");
+        radarDataSet.setFillColor(Color.CYAN);
+        radarDataSet.setDrawFilled(true);
+        radarDataSet.setDrawValues(false);
 
         RadarData radarData = new RadarData(radarDataSet);
+        //radarData.calcMinMaxY(0, 5);
 
         analysisChart.setData(radarData);
+        analysisChart.setWebColor(Color.BLACK);
+        analysisChart.setBackgroundColor(Color.WHITE);
+        analysisChart.setWebColorInner(Color.GRAY);
+
+        Description graphDescription = new Description();
+        graphDescription.setText("Document Tone Summary");
+        graphDescription.setTextAlign(Paint.Align.RIGHT);
+        //graphDescription.setPosition( graphDescription.getPosition().x + 50, graphDescription.getPosition().y );
+
+        analysisChart.setDescription( graphDescription );
+        //analysisChart.setWebLineWidth(5f);
+        //analysisChart.getY
 
         // -- //
 

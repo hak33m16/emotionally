@@ -7,6 +7,7 @@ import android.inputmethodservice.KeyboardView;
 import android.net.Uri;
 import android.provider.*;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
@@ -55,14 +56,33 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
                     }
 
                     break;
-                case Keyboard.KEYCODE_MODE_CHANGE:
-                    sendBroadcast(start_analysis);
+                // Analysis key in bottom left.
+                case -3:
+                    instantiateAnalysisOverlay();
                     break;
                 default :
+                    Log.d("EMOTIONALLY", "Unknown Key Code Pressed: " + String.valueOf(primaryCode));
                     char code = (char) primaryCode;
                     inputConnection.commitText(String.valueOf(code), 1);
             }
         }
+    }
+
+    public void instantiateAnalysisOverlay()  {
+
+        getCurrentInputConnection().performContextMenuAction(android.R.id.selectAll);
+        String boxOfText = (String) getCurrentInputConnection().getSelectedText(0);
+
+        Log.d("EMOTIONALLY", "Analysis instantiation in keyboard activated.");
+        Log.d("EMOTIONALLY", boxOfText);
+
+        Intent svc = new Intent(this, AnalysisOverlayService.class);
+        svc.putExtra("ANALYSIS", boxOfText);
+
+        // Close activity if it is already open
+        stopService(svc);
+        startService(svc);
+
     }
 
     @Override
