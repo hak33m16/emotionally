@@ -17,19 +17,18 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    ApplicationController apc;
-    String testMessage = "Some great weather we are having today, what do you think, Bob? I hate your guts, bastard.";
-    ProgressBar analysisStatus;
-    EditText mainActivityTextBox;
+    //ApplicationController   apc;
+    //ProgressBar             analysisStatus;
+    //EditText                mainActivityTextBox;
 
-    //String currentUserMessage;
+    ////////////////////////////////////////////////////////
+    //
+    // Overridden Methods from Parent
+    //
+    ///////////////////////////////////
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-
-        Log.d("EMOTIONALLY", "Application instantiated.");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -42,27 +41,33 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mainToolbar);
 
         // Hide loading bar by default
-        analysisStatus = findViewById(R.id.analysis_progress_bar);
-        analysisStatus.setVisibility( View.INVISIBLE );
+        //analysisStatus = findViewById(R.id.analysis_progress_bar);
+        //analysisStatus.setVisibility( View.INVISIBLE );
 
-        mainActivityTextBox = findViewById(R.id.analysis_input_main_activity);
+        //mainActivityTextBox = findViewById(R.id.analysis_input_main_activity);
 
-        apc = new ApplicationController();
+        //apc = new ApplicationController();
 
     }
+
+    ////////////////////////////////////////////////////////////
+    //
+    // VIEW MANIPULATION FUNCTIONS
+    //
+    //////////////////////////////////
 
     /* Screen Switching */
     public void options_screen(View view) {
         setContentView(R.layout.options_view);
     }
 
-    public void analyzeButton(View view) {
+    /*public void analyzeButton(View view) {
 
         // Display loading bar in main UI
-        analysisStatus.setVisibility( View.VISIBLE );
+        //analysisStatus.setVisibility( View.VISIBLE );
 
         // Act as a buffer between view hierarchies
-        final String currentUserMessage = mainActivityTextBox.getText().toString();
+        //final String currentUserMessage = mainActivityTextBox.getText().toString();
 
         Runnable runnable = new Runnable() {
             @Override
@@ -71,15 +76,27 @@ public class MainActivity extends AppCompatActivity {
                 final String response = apc.getAnalysisApiController().getApiAdaptor().getAPI("IBMToneAPI").analyze( currentUserMessage);
                 Log.d("EMOTIONALLY", response);
 
-                launchMainService(response);
+                //launchMainService(response);
 
             }
         };
 
         new Thread(runnable).start();
 
-    }
+    }*/
 
+    /*
+    public void closeAnalysisService(View view) {
+
+        //Intent svc = new Intent(this, AnalysisOverlayService.class);
+        //finish();
+        // Close activity if it is already open
+        //stopService(serviceIntent);
+        //finish();
+
+    }*/
+
+    /*
     private void launchMainService( String text ) {
 
         // Analysis is done if we've reached this point
@@ -91,16 +108,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Intent svc = new Intent(this, AnalysisOverlayService.class);
-        svc.putExtra("ANALYSIS", text);
+        svc.putExtra("io.emotionally.barycenter.emotionally.ANALYSIS", text);
 
         // Close activity if it is already open
         stopService(svc);
         startService(svc);
         finish();
 
-    }
+    }*/
 
     public final static int REQUEST_CODE = 10101;
+
+    ///////////////////////////////////////////////////////////
+    //
+    // Permission-Based Functions
+    //
+    //////////////////////////////////
 
     public void checkDrawOverlayPermission() {
 
@@ -121,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             // Double-check that the user granted it, and didn't just dismiss the request
             if (Settings.canDrawOverlays(this)) {
                 // Launch the service
-                launchMainService("this should not have happened");
+                //launchMainService("this should not have happened");
             }
             else {
                 Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show();

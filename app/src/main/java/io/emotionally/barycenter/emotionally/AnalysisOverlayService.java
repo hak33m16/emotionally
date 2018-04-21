@@ -5,9 +5,13 @@ package io.emotionally.barycenter.emotionally;
  */
 
 
+import android.annotation.SuppressLint;
+import android.app.IntentService;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -19,8 +23,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.RadarChart;
@@ -41,48 +48,50 @@ import java.util.ArrayList;
  *
  */
 
-public class AnalysisOverlayService extends Service implements View.OnTouchListener, View.OnGenericMotionListener {
+public class AnalysisOverlayService extends IntentService implements View.OnTouchListener, View.OnGenericMotionListener {
 
-    private static final String TAG = AnalysisOverlayService.class.getSimpleName();
-
+    private static final String TAG = "EMOTIONALLY";
     private WindowManager windowManager;
+    private View floatingView;
+    private String displayText;
 
-    private View floatyView;
+    public class CloseButtonOnClickListener implements View.OnClickListener {
 
-    private String displayText = "empty";
+        private Context appContext;
+        public CloseButtonOnClickListener(Context context) {
+            appContext = context;
+        }
+
+        @Override
+        public void onClick(View view) {
+            // Call function in owning class.
+            onDestroy();
+        }
+
+    }
+
+    public AnalysisOverlayService() {
+        super("AnalysisOverlayService");
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d("EMOTIONALLY", "We've made it to the onStartCommand function in AnalysisOverlayService.java");
-
-        Bundle extras = intent.getExtras();
-        if (extras == null) {
-            Log.d("EMOTIONALLY", "The analysis didn't make it.");
-        } else {
-            displayText = (String) extras.get("ANALYSIS");
-        }
-
-        addOverlayView();
+        // Prevent code duplication and pass intent to
+        // our intent handler. :)
+        onHandleIntent(intent);
 
         return START_NOT_STICKY;
+
     }
 
     @Override
     public IBinder onBind(Intent intent) {
 
-        /*Log.d("EMOTIONALLY", "We've made it to the IBinder function in AnalysisOverlayService.java");
+        // Prevent code duplication and pass intent to
+        // our intent handler. :)
+        onHandleIntent(intent);
 
-        Bundle extras = intent.getExtras();
-        if (extras == null) {
-            Log.d("EMOTIONALLY", "The analysis didn't make it.");
-        } else {
-            displayText = (String) extras.get("ANALYSIS");
-        }
-
-        return null;*/
-
-        // No binding implementation provided.
         return null;
     }
 
@@ -90,13 +99,38 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
     public void onCreate() {
 
         super.onCreate();
-
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
-        //addOverlayView();
     }
 
-    private void addOverlayView() {
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
+        String action = intent.getAction();
+
+        if ( action == null ) return;
+        Log.d("EMOTIONALLY", "The action has been read as: " + action);
+
+        switch (action) {
+            case "io.emotionally.barycenter.emotionally.ACTION_ANALYZE":
+                // Can't find out how to stop this exception. Odd.
+                addOverlayView((String) intent.getExtras().get("io.emotionally.barycenter.emotionally.ANALYSIS_TEXT"));
+                break;
+            case "io.emotionally.barycenter.emotionally.CLOSE":
+                onDestroy();
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void addOverlayView(String analysis) {
+
+        ////////////////////////////////////////////////////////////////
+        //
+        // Use access to display the system overlay via WindowManager
+        //
 
         final WindowManager.LayoutParams params =
                 new WindowManager.LayoutParams(
@@ -106,7 +140,7 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
                         0,
                         PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.CENTER | Gravity.START;
+        //params.gravity = Gravity.CENTER | Gravity.START;
         params.x = 0;
         params.y = 0;
 
@@ -133,29 +167,33 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
             }
         };
 
-        Log.d("EMOTIONALLY", "But did we do this AFTER making it to the onStart?");
-        floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_analysis_alert, interceptorLayout);
+        // "Inflate" the view utilizing our WindowManager
+        floatingView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_analysis_alert, interceptorLayout);
 
-        floatyView.setOnTouchListener(this);
+        floatingView.setOnTouchListener(this);
 
-        TextView testModify = floatyView.findViewById(R.id.float_analysis_text);
-        testModify.setText(displayText);
+        ImageButton exitButton = (ImageButton) floatingView.findViewById(R.id.float_analysis_exit_button);
+        exitButton.setOnClickListener( new CloseButtonOnClickListener(this) );
 
-        RadarChart analysisChart = (RadarChart) floatyView.findViewById(R.id.float_analysis_radarchart);
+        TextView scrollableTextBox = floatingView.findViewById(R.id.float_analysis_text);
+        scrollableTextBox.setText(analysis);
+
+        RadarChart analysisChart = (RadarChart) floatingView.findViewById(R.id.float_analysis_radarchart);
 
         // Data population for chart //
 
         ArrayList<RadarEntry> entries = new ArrayList<>();
         entries.add(new RadarEntry(4f, "Anger"));
-        entries.add(new RadarEntry(1f, "Fear"));
+        entries.add(new RadarEntry(5f, "Fear"));
         entries.add(new RadarEntry(2f, "Joy"));
         entries.add(new RadarEntry(3f, "Sadness"));
         entries.add(new RadarEntry(1f, "Analytical"));
         entries.add(new RadarEntry(5f, "Confident"));
-        entries.add(new RadarEntry(2f, "Tentative"));
+        entries.add(new RadarEntry(3f, "Tentative"));
 
         RadarDataSet radarDataSet = new RadarDataSet(entries, "Score");
         radarDataSet.setFillColor(Color.CYAN);
+        radarDataSet.setFillAlpha(100); // Out of 255
         radarDataSet.setDrawFilled(true);
         radarDataSet.setDrawValues(false);
 
@@ -173,12 +211,13 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
         //graphDescription.setPosition( graphDescription.getPosition().x + 50, graphDescription.getPosition().y );
 
         analysisChart.setDescription( graphDescription );
+
         //analysisChart.setWebLineWidth(5f);
         //analysisChart.getY
 
         // -- //
 
-        windowManager.addView(floatyView, params);
+        windowManager.addView(floatingView, params);
     }
 
     @Override
@@ -186,31 +225,51 @@ public class AnalysisOverlayService extends Service implements View.OnTouchListe
 
         super.onDestroy();
 
-        if (floatyView != null) {
-
-            windowManager.removeView(floatyView);
-
-            floatyView = null;
+        if ( floatingView != null ) {
+            windowManager.removeView(floatingView);
+            floatingView = null;
         }
+
+        //unregisterReceiver( receiver );
+
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        Log.v(TAG, "onTouch...");
+        Log.d("EMOTIONALLY", "onTouch...");
 
-        // Kill service
-        onDestroy();
+        //view.performClick();
+
+        //motionEvent.getAction();
+
+
+        //closeButton.setPressed(true);
+
+        //Log.d("EMOTIONALLY", "Image Button Status: " + closeButton.isPressed() );
+        //if ( closeButtonPressed() ) {
+            // Kills the analysis screen.
+        //    onDestroy();
+        //}
 
         return true;
     }
+
+
 
     @Override
     public boolean onGenericMotion(View view, MotionEvent motionEvent) {
 
-        //motionEvent.getButtonState();
+        Log.d("EMOTIONALLY", "Generic Button State: " + motionEvent.getButtonState() );
 
         return true;
     }
+
+    //////////////////////////////////////////////////
+    //
+    // Functions Dependent on Receiving Intent
+    //
+    //////////////////
+
 
 }

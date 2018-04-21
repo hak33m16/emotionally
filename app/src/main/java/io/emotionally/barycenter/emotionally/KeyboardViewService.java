@@ -4,15 +4,10 @@ import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.net.Uri;
-import android.provider.*;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
-import android.widget.Toast;
-
-import java.lang.reflect.Method;
 
 public class KeyboardViewService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 
@@ -24,7 +19,7 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
         start_analysis.setAction("io.emotionally.barycenter.emotionally.START_ANALYSIS");
 
         KeyboardView keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard_view, null);
-        Keyboard keyboard = new Keyboard(this, R.layout.number_pad);
+        Keyboard keyboard = new Keyboard(this, R.layout.keyboard_layout);
         keyboardView.setKeyboard(keyboard);
         keyboardView.setOnKeyboardActionListener(this);
         return keyboardView;
@@ -73,11 +68,12 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
         getCurrentInputConnection().performContextMenuAction(android.R.id.selectAll);
         String boxOfText = (String) getCurrentInputConnection().getSelectedText(0);
 
-        Log.d("EMOTIONALLY", "Analysis instantiation in keyboard activated.");
-        Log.d("EMOTIONALLY", boxOfText);
+        //Log.d("EMOTIONALLY", "Analysis instantiation in keyboard activated.");
+        //Log.d("EMOTIONALLY", boxOfText);
 
         Intent svc = new Intent(this, AnalysisOverlayService.class);
-        svc.putExtra("ANALYSIS", boxOfText);
+        svc.setAction("io.emotionally.barycenter.emotionally.ACTION_ANALYZE");
+        svc.putExtra("io.emotionally.barycenter.emotionally.ANALYSIS_TEXT", boxOfText);
 
         // Close activity if it is already open
         stopService(svc);
