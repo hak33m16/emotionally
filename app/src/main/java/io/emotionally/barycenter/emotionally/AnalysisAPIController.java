@@ -32,13 +32,12 @@ public class AnalysisAPIController {
     }
 
     public void printAnalysis(){
-        Log.d("EMOTIONALLY", analysis.message);
+        Log.d("EMOTIONALLY", "from controller: " + analysis.message);
     }
 
     public JSONObject getAnalysis(){
         try{
-            JSONObject jObj = new JSONObject(analysis.message);
-            return jObj;
+            return new JSONObject(analysis.message);
         } catch (JSONException e){
             Log.e("EMOTIONALLY", "BAD JSON");
         }

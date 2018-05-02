@@ -9,13 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class KeyboardViewService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 
+    ApplicationController apc;
     private Intent start_analysis = new Intent();
 
     @Override
     public View onCreateInputView() {
 
+        apc = new ApplicationController();
         start_analysis.setAction("io.emotionally.barycenter.emotionally.START_ANALYSIS");
 
         KeyboardView keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard_view, null);
@@ -53,7 +58,7 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
                     break;
                 // Analysis key in bottom left.
                 case -3:
-                    instantiateAnalysisOverlay();
+                    instantiateAnalysisOverlaySequence();
                     break;
                 default :
                     Log.d("EMOTIONALLY", "Unknown Key Code Pressed: " + String.valueOf(primaryCode));
@@ -63,19 +68,50 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
         }
     }
 
-    public void instantiateAnalysisOverlay()  {
+    // This function pulls all text from the current input
+    // box and sends it over to the analysis overlay.
+    public void instantiateAnalysisOverlaySequence()  {
+
+        Log.d("EMOTIONALLY", "Made it to the first function in sequence.");
 
         getCurrentInputConnection().performContextMenuAction(android.R.id.selectAll);
-        String boxOfText = (String) getCurrentInputConnection().getSelectedText(0);
+        final String inputConnectionText = (String) getCurrentInputConnection().getSelectedText(0);
 
-        //Log.d("EMOTIONALLY", "Analysis instantiation in keyboard activated.");
-        //Log.d("EMOTIONALLY", boxOfText);
+        Log.d("EMOTIONALLY", "Input Box: " + inputConnectionText);
+
+        // We must run this on another thread so as to prevent it
+        // from locking up our keyboard due to the network call.
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d("EMOTIONALLY", "Communication with API.");
+                String response = apc.getAnalysisApiController().getApiAdaptor().getAPI("IBMToneAPI").analyze( inputConnectionText );
+
+                try {
+                    JSONObject temp = new JSONObject(response);
+                    Log.d("EMOTIONALLY", "Document Test: " + temp.getJSONObject("document_tone").toString() );
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                startAnalysisOverlay(response);
+            }
+        };
+
+        if ( inputConnectionText != null && !inputConnectionText.isEmpty() && inputConnectionText != "" ) {
+            new Thread(runnable).start();
+        }
+
+    }
+
+    public void startAnalysisOverlay(String text) {
+
+        Log.d("EMOTIONALLY", "Made it to analysis overlay invocation in keyboard.");
 
         Intent svc = new Intent(this, AnalysisOverlayService.class);
         svc.setAction("io.emotionally.barycenter.emotionally.ACTION_ANALYZE");
-        svc.putExtra("io.emotionally.barycenter.emotionally.ANALYSIS_TEXT", boxOfText);
+        svc.putExtra("io.emotionally.barycenter.emotionally.ANALYSIS_TEXT", text);
 
-        // Close activity if it is already open
         stopService(svc);
         startService(svc);
 

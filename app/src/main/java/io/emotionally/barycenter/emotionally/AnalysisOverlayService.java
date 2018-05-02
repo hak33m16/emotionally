@@ -31,11 +31,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -127,6 +133,9 @@ public class AnalysisOverlayService extends IntentService implements View.OnTouc
 
     private void addOverlayView(String analysis) {
 
+        //JsonParser parser = new JsonParser();
+        //JSONObject analysisJSON = new JSONObject( (JSONObject) analysis);
+
         ////////////////////////////////////////////////////////////////
         //
         // Use access to display the system overlay via WindowManager
@@ -156,7 +165,7 @@ public class AnalysisOverlayService extends IntentService implements View.OnTouc
                     if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 
                         Log.v(TAG, "BACK Button Pressed");
-
+                        onDestroy();
                         // As we've taken action, we'll return true to prevent other apps from consuming the event as well
                         return true;
                     }
@@ -191,14 +200,45 @@ public class AnalysisOverlayService extends IntentService implements View.OnTouc
         entries.add(new RadarEntry(5f, "Confident"));
         entries.add(new RadarEntry(3f, "Tentative"));
 
-        RadarDataSet radarDataSet = new RadarDataSet(entries, "Score");
+        RadarDataSet radarDataSet = new RadarDataSet(entries, "Score (0 - 1)");
         radarDataSet.setFillColor(Color.CYAN);
         radarDataSet.setFillAlpha(100); // Out of 255
         radarDataSet.setDrawFilled(true);
         radarDataSet.setDrawValues(false);
 
+        XAxis xAxis = analysisChart.getXAxis();
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+
+                String label;
+                switch((int) value) {
+                    case 0: label = "Anger";
+                        break;
+                    case 1: label = "Fear";
+                        break;
+                    case 2: label = "Joy";
+                        break;
+                    case 3: label = "Sadness";
+                        break;
+                    case 4: label = "Analytical";
+                        break;
+                    case 5: label = "Confident";
+                        break;
+                    case 6: label = "Tentative";
+                        break;
+                    default: label = "! ERROR !";
+                        break;
+                }
+
+                return label;
+
+            }
+
+        });
+
         RadarData radarData = new RadarData(radarDataSet);
-        //radarData.calcMinMaxY(0, 5);
 
         analysisChart.setData(radarData);
         analysisChart.setWebColor(Color.BLACK);
@@ -208,12 +248,9 @@ public class AnalysisOverlayService extends IntentService implements View.OnTouc
         Description graphDescription = new Description();
         graphDescription.setText("Document Tone Summary");
         graphDescription.setTextAlign(Paint.Align.RIGHT);
-        //graphDescription.setPosition( graphDescription.getPosition().x + 50, graphDescription.getPosition().y );
+        //graphDescription.setPosition( graphDescription.getPosition().x + 50, graphDescription.getPosition().y + 50 );
 
         analysisChart.setDescription( graphDescription );
-
-        //analysisChart.setWebLineWidth(5f);
-        //analysisChart.getY
 
         // -- //
 

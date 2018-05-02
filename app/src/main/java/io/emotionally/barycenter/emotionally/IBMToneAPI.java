@@ -14,26 +14,33 @@ import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-enum IBMEnum {sentences, document};
+/*enum IBMEnum {sentences, document};*/
 
 public class IBMToneAPI extends API{
 
 	private ServiceCall call;
 	private ToneAnalyzer server;
 	private Pair<String,String> login;
-	private IBMEnum mode;
+	//private IBMEnum mode;
 	private JSONObject response = new JSONObject();
 
 	private Boolean analysis_status = false;
 
 	public IBMToneAPI(){
+
+	    // API constructor provides interface
+        // to our API_ID String.
+	    super("IBMToneAPI");
+
 		server = new ToneAnalyzer("2017-09-21");
 		login = Pair.create("a51ba1b9-ba49-4b5e-b197-edc37eecd571", "dHXyey1MmoWC");
 		server.setUsernameAndPassword(login.first, login.second);
+
 	}
 
     @Override
 	public String analyze(String message){
+
 		ToneInput toneInput = new ToneInput.Builder().text(message).build();
 		ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();
 		ToneAnalysis tone = server.tone(options).execute();
@@ -48,8 +55,10 @@ public class IBMToneAPI extends API{
 			Log.e("EMOTIONALLY", "Bad JSONObject");
 		}
 
-		return new String();
+		return "";
+
 	}
+
 	/*public JSONObject analyze(String message){
 	    ToneInput toneInput = new ToneInput.Builder().text(message).build();
 	    ToneOptions options = new ToneOptions.Builder().toneInput(toneInput).build();
