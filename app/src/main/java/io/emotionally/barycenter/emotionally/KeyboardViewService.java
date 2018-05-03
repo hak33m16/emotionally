@@ -1,9 +1,13 @@
 package io.emotionally.barycenter.emotionally;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -18,17 +22,25 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
 
     ApplicationController apc;
     private Intent start_analysis = new Intent();
+    private Vibrator keyboardVibrator;
+    private ClipboardManager clipboardManager;
+    Boolean caps = false, shift = false;
 
     @Override
     public View onCreateInputView() {
+
+        keyboardVibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+        clipboardManager = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
 
         apc = new ApplicationController();
         start_analysis.setAction("io.emotionally.barycenter.emotionally.START_ANALYSIS");
 
         KeyboardView keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard_view, null);
+
         Keyboard keyboard = new Keyboard(this, R.layout.keyboard_layout);
         keyboardView.setKeyboard(keyboard);
         keyboardView.setOnKeyboardActionListener(this);
+
         return keyboardView;
     }
 
@@ -44,9 +56,13 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
+
         InputConnection inputConnection = getCurrentInputConnection();
 
         if (inputConnection != null) {
+
+            keyboardVibrator.vibrate(50);
+
             switch(primaryCode) {
                 case Keyboard.KEYCODE_DELETE :
                     CharSequence selectedText = inputConnection.getSelectedText(0);
@@ -58,13 +74,24 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
                     }
 
                     break;
+                // The Shift key
+                case -1:
+                    caps = !caps;
+                    break;
+                // Analyze from clipboard, was the '123' button
+                case -2:
+                    instantiateAnalysisOverlaySequence(true);
+                    break;
                 // Analysis key in bottom left.
                 case -3:
-                    instantiateAnalysisOverlaySequence();
+                    instantiateAnalysisOverlaySequence(false);
                     break;
                 default :
-                    Log.d("EMOTIONALLY", "Unknown Key Code Pressed: " + String.valueOf(primaryCode));
+                    //Log.d("EMOTIONALLY", "Unknown Key Code Pressed: " + String.valueOf(primaryCode));
                     char code = (char) primaryCode;
+                    if ( Character.isLetter(code) && caps ) {
+                        code = Character.toUpperCase(code);
+                    }
                     inputConnection.commitText(String.valueOf(code), 1);
             }
         }
@@ -72,12 +99,27 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
 
     // This function pulls all text from the current input
     // box and sends it over to the analysis overlay.
-    public void instantiateAnalysisOverlaySequence()  {
+    public void instantiateAnalysisOverlaySequence(Boolean clipboard)  {
 
         Log.d("EMOTIONALLY", "Made it to the first function in sequence.");
 
-        getCurrentInputConnection().performContextMenuAction(android.R.id.selectAll);
-        final String inputConnectionText = (String) getCurrentInputConnection().getSelectedText(0);
+        String inputText = null;
+        if ( !clipboard ) {
+
+            getCurrentInputConnection().performContextMenuAction(android.R.id.selectAll);
+            inputText = (String) getCurrentInputConnection().getSelectedText(0);
+
+        } else {
+
+            if ( clipboardManager.hasPrimaryClip() && clipboardManager.getPrimaryClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) ) {
+                ClipData.Item item = clipboardManager.getPrimaryClip().getItemAt(0);
+                inputText = item.getText().toString();
+            }
+
+        }
+
+        final String inputConnectionText = inputText;
+
 
         Log.d("EMOTIONALLY", "Input Box: " + inputConnectionText);
 
