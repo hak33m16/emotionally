@@ -12,6 +12,8 @@ import android.view.inputmethod.InputConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class KeyboardViewService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
 
     ApplicationController apc;
@@ -98,7 +100,7 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
             }
         };
 
-        if ( inputConnectionText != null && !inputConnectionText.isEmpty() && inputConnectionText != "" ) {
+        if ( inputConnectionText != null && !inputConnectionText.isEmpty() && !inputConnectionText.equals("") ) {
             new Thread(runnable).start();
         }
 
@@ -110,7 +112,9 @@ public class KeyboardViewService extends InputMethodService implements KeyboardV
 
         Intent svc = new Intent(this, AnalysisOverlayService.class);
         svc.setAction("io.emotionally.barycenter.emotionally.ACTION_ANALYZE");
+
         svc.putExtra("io.emotionally.barycenter.emotionally.ANALYSIS_TEXT", text);
+        svc.putExtra("io.emotionally.barycenter.emotionally.ANALYSIS_API_ID", "IBMToneAPI");
 
         stopService(svc);
         startService(svc);

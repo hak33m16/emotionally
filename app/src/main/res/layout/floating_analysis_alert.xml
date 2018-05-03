@@ -30,23 +30,35 @@
     </RelativeLayout>
 
 
-    <TextView
-        android:id="@+id/float_analysis_text"
-
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top" />
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <com.github.mikephil.charting.charts.RadarChart
-            android:id="@+id/float_analysis_radarchart"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </RelativeLayout>
+            <com.github.mikephil.charting.charts.RadarChart
+                android:id="@+id/float_analysis_radarchart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
+
+            <TextView
+                android:id="@+id/float_analysis_text"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!--
+
+
+
+
+    -->
 
     <!--
     <EditText

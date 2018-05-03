@@ -1,8 +1,12 @@
 package io.emotionally.barycenter.emotionally;
 
-import com.github.mikephil.charting.charts.RadarChart;
+import android.graphics.Color;
+import android.util.Pair;
 
+import com.github.mikephil.charting.charts.RadarChart;
 import org.json.JSONObject;
+import java.util.List;
+import java.util.Map;
 
 ///////////////////////////////////
 //
@@ -13,26 +17,17 @@ import org.json.JSONObject;
 
 public class API {
 
-	protected String API_ID;
-
-	public API(){
-	    API_ID = "";
-	}
-
-	public API(String a){
-	    API_ID = a;
-    }
-
     // Static method that will be utilized
-	// by each concrete API class.
+	// by each concrete API class in future.
     public static RadarChart generateGraph(JSONObject analysisJSON) {
 		RadarChart radarChart;
         return  null;
 	}
 
-    /*public JSONObject analyze(String message){
-        return new JSONObject();
-    }*/
+	public List<String> getAnalysisLabels() {
+		return null;
+	}
+    public Map<String, Integer> getLabelColors() { return null; }
 
     public String analyze(String message){
         return "";
