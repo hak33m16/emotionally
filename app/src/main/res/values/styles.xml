@@ -17,4 +17,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="CustomMenuStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@color/lightGrey</item>
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">-4dp</item>
+    </style>
+
 </resources>
