@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="notBlindingWhite">#CFCFCF</color>
+    <color name="lightGrey">#5F5F5F</color>
+    <color name="grey">#303030</color>
+    <color name="darkGrey">#1F1F1F</color>
+    <color name="lightBlack">#0D0D0D</color>
+    <color name="brightestDarkNeonGreen">#0BBE01</color>
+    <color name="brightDarkNeonGreen">#109709</color>
+    <color name="darkNeonGreen">#0C7A07</color>
+    <color name="darkerDarkNeonGreen">#045500</color>
+    <color name="darkestNeonGreen">#033200</color>
 </resources>
