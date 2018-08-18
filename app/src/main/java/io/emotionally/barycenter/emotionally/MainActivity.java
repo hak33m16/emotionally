@@ -33,10 +33,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        mainToolbar.setBackground(
-                new ColorDrawable(Color.BLACK )
-        );
+        Toolbar mainToolbar = (Toolbar) findViewById(R.id.settings_bar);
+        //TODO set colors in layout and not in backend
+        /*mainToolbar.setBackground(
+                new ColorDrawable(Color.RED )
+        );*/
         mainToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mainToolbar);
 
