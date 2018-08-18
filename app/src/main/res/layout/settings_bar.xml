@@ -4,8 +4,9 @@
     android:id="@+id/settings_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey"
     android:visibility="visible"
-    app:popupTheme="@style/CustomMenuStyle">
+    app:popupTheme="@style/CustomMenuStyle"
+    android:theme="@style/CustomMenuStyle">
+
 
 </android.support.v7.widget.Toolbar>

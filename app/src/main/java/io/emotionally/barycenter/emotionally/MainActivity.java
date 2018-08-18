@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         /*mainToolbar.setBackground(
                 new ColorDrawable(Color.RED )
         );*/
-        mainToolbar.setTitleTextColor(Color.WHITE);
+        //mainToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mainToolbar);
 
         // Hide loading bar by default
@@ -63,6 +64,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.help:
+                Intent help = new Intent(this, HelpActivity.class);
+                startActivity(help);
+                break;
+            case R.id.options_settings:
+                Intent settings = new Intent(this, SettingsActivity.class);
+                startActivity(settings);
+                break;
+            default:
+                //error
+        }
         return super.onOptionsItemSelected(item);
     }
 
