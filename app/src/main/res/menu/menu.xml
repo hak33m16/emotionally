@@ -5,8 +5,13 @@
 
 
     <item
-        android:id="@+id/options_settings"
-        android:title="@string/options_settings"
+        android:id="@+id/android_settings"
+        android:title="@string/android_settings"
+        app:showAsAction="never"></item>
+
+    <item
+        android:id="@+id/keyboard_options"
+        android:title="@string/keyboard_options"
         app:showAsAction="never"></item>
 
     <item

@@ -65,13 +65,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.android_settings:
+                Intent settings = new Intent(this, SettingsActivity.class);
+                startActivity(settings);
+                break;
+            case R.id.keyboard_options:
+                Intent options = new Intent(this, OptionsActivity.class);
+                startActivity(options);
+                break;
             case R.id.help:
                 Intent help = new Intent(this, HelpActivity.class);
                 startActivity(help);
-                break;
-            case R.id.options_settings:
-                Intent settings = new Intent(this, SettingsActivity.class);
-                startActivity(settings);
                 break;
             default:
                 //error
